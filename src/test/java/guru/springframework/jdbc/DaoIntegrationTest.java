@@ -2,7 +2,10 @@ package guru.springframework.jdbc;
 
 import guru.springframework.jdbc.dao.AuthorDao;
 import guru.springframework.jdbc.dao.AuthorDaoImpl;
+import guru.springframework.jdbc.dao.BookDao;
+import guru.springframework.jdbc.dao.BookDaoImpl;
 import guru.springframework.jdbc.domain.Author;
+import guru.springframework.jdbc.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -13,20 +16,21 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by jt on 8/28/21.
  */
 @ActiveProfiles("local")
 @DataJpaTest
-@Import(AuthorDaoImpl.class)
+@Import({AuthorDaoImpl.class, BookDaoImpl.class})
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 public class DaoIntegrationTest {
     @Autowired
     AuthorDao authorDao;
 
-//    @Autowired
-//    BookDao bookDao;
+    @Autowired
+    BookDao bookDao;
 //
 //    @Test
 //    void testDeleteBook() {
@@ -64,35 +68,30 @@ public class DaoIntegrationTest {
 //        assertThat(fetched.getTitle()).isEqualTo("New Book");
 //    }
 //
-//    @Test
-//    void testSaveBook() {
-//        Book book = new Book();
-//        book.setIsbn("1234");
-//        book.setPublisher("Self");
-//        book.setTitle("my book");
-//
-//        Author author = new Author();
-//        author.setId(3L);
-//
-//        book.setAuthor(author);
-//        Book saved = bookDao.saveNewBook(book);
-//
-//        assertThat(saved).isNotNull();
-//    }
-//
-//    @Test
-//    void testGetBookByName() {
-//        Book book = bookDao.findBookByTitle("Clean Code");
-//
-//        assertThat(book).isNotNull();
-//    }
-//
-//    @Test
-//    void testGetBook() {
-//        Book book = bookDao.getById(3L);
-//
-//        assertThat(book.getId()).isNotNull();
-//    }
+    @Test
+    void testSaveBook() {
+         Book book = new Book();
+         book.setIsbn("1234");
+         book.setPublisher("Self");
+         book.setTitle("my book");
+         book.setAuthorId(3L);
+         Book saved = bookDao.saveNewBook(book);
+        assertThat(saved).isNotNull();
+    }
+
+    @Test
+    void testGetBookByName() {
+        Book book = bookDao.findBookByTitle("Clean Code");
+
+        assertThat(book).isNotNull();
+     }
+
+     @Test
+     void testGetBook() {
+         Book book = bookDao.getById(3L);
+         assertThat(book.getId()).isNotNull();
+        assertTrue(book.getTitle().equals("Spring in Action, 6th Edition"));
+    }
 
     @Test
     void testDeleteAuthor() {
