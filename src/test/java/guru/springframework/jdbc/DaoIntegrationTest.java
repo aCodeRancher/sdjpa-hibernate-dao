@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by jt on 8/28/21.
@@ -190,6 +191,13 @@ public class DaoIntegrationTest {
         assertThat(fetched).isNotNull();
 
         bookDao.deleteBookById(saved.getId());
+    }
+
+    @Test
+    void testFindBookByTitleCriteria(){
+         String booktitleToLook = "Clean Code";
+         Book foundBookTitle = bookDao.findBookByTitleCriteria(booktitleToLook);
+         assertTrue(foundBookTitle.getTitle().equals(booktitleToLook));
     }
 
     @Test
