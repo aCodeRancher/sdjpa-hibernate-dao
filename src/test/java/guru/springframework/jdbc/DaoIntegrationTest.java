@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Created by jt on 8/28/21.
@@ -41,6 +42,11 @@ public class DaoIntegrationTest {
         assertThat(authors.size()).isGreaterThan(0);
     }
 
+    @Test
+    void testFindAllBook(){
+       List<Book> bookList = bookDao.findAll();
+       assertTrue(bookList.size()>0);
+    }
     @Test
     void testFindBookByISBN() {
         Book book = new Book();
@@ -120,6 +126,20 @@ public class DaoIntegrationTest {
         assertThat(book).isNotNull();
     }
 
+    @Test
+    void testFindNewBookByTitle(){
+         Book book = new Book();
+         book.setTitle("Quantum Computing For Babies");
+         book.setAuthorId(3L);
+         book.setIsbn("87394");
+         book.setPublisher("Oreilly");
+         bookDao.saveNewBook(book);
+
+         Book fetched = bookDao.findBookByTitle("Quantum Computing For Babies");
+         assertTrue(fetched.getId()!=null);
+
+         bookDao.deleteBookById(fetched.getId());
+    }
     @Test
     void testGetBook() {
         Book book = bookDao.getById(3L);
