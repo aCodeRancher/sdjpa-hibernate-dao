@@ -3,6 +3,7 @@ package guru.springframework.jdbc;
 import guru.springframework.jdbc.dao.AuthorDao;
 import guru.springframework.jdbc.dao.AuthorDaoImpl;
 import guru.springframework.jdbc.domain.Author;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -112,7 +113,6 @@ public class DaoIntegrationTest {
     }
 
     @Test
-    @Rollback(false)
     void testUpdateAuthor() {
         Author author = new Author();
         author.setFirstName("john");
@@ -121,7 +121,8 @@ public class DaoIntegrationTest {
         Author saved = authorDao.saveNewAuthor(author);
 
         saved.setLastName("Thompson");
-        Author updated = authorDao.updateAuthor(saved);
+       authorDao.updateAuthor(saved);
+        Author updated = authorDao.getById(saved.getId());
 
         assertThat(updated.getLastName()).isEqualTo("Thompson");
     }

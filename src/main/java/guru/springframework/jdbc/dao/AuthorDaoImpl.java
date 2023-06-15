@@ -51,6 +51,7 @@ public class AuthorDaoImpl implements AuthorDao {
         em.merge(author);
         em.flush();
         em.clear();
+        em.getTransaction().commit();
         return em.find(Author.class, author.getId());
     }
 
